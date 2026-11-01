@@ -1,0 +1,67 @@
+﻿MODEL NOTES AND SOURCES
+
+SCOPE
+I modelled 24 classrooms: 12 regular-use and 12 extended-use rooms.
+Each has four 4 x 18 W fluorescent fixtures and one 235 W smartboard.
+The classroom inventory and timetable come from my school. Our classrooms
+have no separate computers.
+
+The study covers lighting and smartboards. Heating, cooling, ballast losses,
+standby and controller consumption are excluded.
+
+LOADS AND SENSOR INPUT
+The supply is 230 V RMS, 50 Hz. Each fixture is represented by 734.7 ohms
+and the smartboard by 225.10 ohms. These loads represent nominal active power,
+not device internals or measured average consumption.
+
+The daylight divider uses a 5 V supply, a 10k/100k upper resistance for
+bright/dark conditions, a 47k lower resistance and a 2.5 V threshold.
+It is not calibrated to illuminance in lux.
+
+MAIN COMPARISON
+The modelled day is 08:00-17:30. Manual lights are on 08:00-09:00 and
+13:45-17:30: half the observation window. Daylight is assumed sufficient
+09:00-15:00. These are scenario assumptions, not measured patterns.
+
+Regular rooms become empty at 16:05; extended rooms at 17:00. Some students
+remain during breaks, so occupancy continues through them. Smartboard demand
+follows lessons in both strategies; main-case savings therefore come from
+lighting. The full timetable is represented in the command files.
+
+Automatic control uses perfect detection and a 180-second switch-off delay.
+Both experiments begin occupied with detection active. Empty-start behaviour
+is outside this configuration.
+
+SENSOR-GAP TEST
+This separate test assumes continuous darkness and detection gaps of
+20, 120, 240 and 420 seconds while the room remains occupied. I compare
+switch-off delays of 0, 60, 180, 300 and 600 seconds.
+
+Longer delays reduce unwanted interruptions but increase energy use after
+departure. The gaps are test inputs, not measured sensor failure rates.
+
+MEASUREMENTS
+TIME_SCALE=60 maps 570 simulation seconds to 9.5 real hours. Schedules,
+timers and energy calculations use this scale factor; AC remains 50 Hz
+in simulation time.
+
+E_load_Wh: total energy delivered by the load supply.
+E_empty_Wh: energy consumed while the classroom is empty.
+T_light_off_s: time lighting is off despite occupancy and darkness.
+T_board_off_s: time the board is off despite occupancy and demand.
+
+SCHOOL-SCALE PROJECTIONS
+Totals combine 12 rooms of each schedule type. Monthly and yearly estimates
+repeat the same scenario for 20 and 180 school days, without seasonal variation.
+Prices of 3, 5 and 7 TRY/kWh are illustrative.
+Cost estimates exclude equipment, installation and maintenance.
+
+SOURCES
+Fluorescent fixture: GESTAS GFST-T8RS T8, 4 x 18 W option, page 57.
+The rating excludes ballast losses.
+https://gestas.com.tr/uploads/services/files/file_1523363707458891.pdf
+
+Smartboard: Vestel 65-inch IFE, 235 W active rating.
+https://www.vestel.com.tr/projeortagim/65-ife-serisi-akilli-tahta-p-2914
+
+Further references and limitations are listed in the report.

@@ -1,0 +1,16 @@
+﻿Information
+
+The four main cases and ten stress-test cases are transcribed in
+main_measurements.txt and stress_measurements.txt. The report uses these
+results for the final configuration.
+All main cases show zero unwanted lighting and board interruption time.
+The stress test shows the expected delay/interruption trade-off.
+
+Daily school totals (12 regular + 12 extended classrooms):
+Manual: 69.68 kWh
+Automatic: 54.77 kWh
+Saved: 14.91 kWh (21.4%)
+20-day projection: 298.18 kWh saved
+180-day projection: 2683.60 kWh saved
+
+These are model outputs and scenario projections, not field measurements.

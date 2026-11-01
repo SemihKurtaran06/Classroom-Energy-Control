@@ -1,0 +1,46 @@
+﻿Main Comparison — LTspice Measurement Results
+
+I ran these simulations in LTspice using the schematics in the schematics folder. 
+The values below were copied from my SPICE Output Log. 
+LTspice version 26.1.1
+
+Window: 0-570 simulation seconds; TIME_SCALE=60; 08:00-17:30 modelled day.
+Energy: Wh. Interruption duration and T_OFF: real seconds.
+AFTERNOON_USED: 0=regular use, 1=extended use.
+CONTROL_MODE: 0=manual lighting, 1=automatic lighting.
+
+STEP 1
+CONTROL_MODE = 0
+AFTERNOON_USED = 0
+T_OFF = 180
+E_load_Wh = 2815.37129227
+E_empty_Wh = 407.740181794
+T_light_off_s = 0
+T_board_off_s = 0
+
+STEP 2
+CONTROL_MODE = 0
+AFTERNOON_USED = 1
+T_OFF = 180
+E_load_Wh = 2991.50882549
+E_empty_Wh = 143.908299408
+T_light_off_s = 0
+T_board_off_s = 0
+
+STEP 3
+CONTROL_MODE = 1
+AFTERNOON_USED = 0
+T_OFF = 180
+E_load_Wh = 2062.25146764
+E_empty_Wh = 14.3909747036
+T_light_off_s = 0
+T_board_off_s = 0
+
+STEP 4
+CONTROL_MODE = 1
+AFTERNOON_USED = 1
+T_OFF = 180
+E_load_Wh = 2502.22078613
+E_empty_Wh = 14.3908775692
+T_light_off_s = 0
+T_board_off_s = 0

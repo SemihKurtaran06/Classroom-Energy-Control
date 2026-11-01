@@ -1,0 +1,160 @@
+* CLASSROOM CONTROL - 0 V OFF, 5 V ON.
+* Initial condition: occupied and detected at 08:00.
+
+* CLASSROOM SCHEDULES - real seconds since 08:00.
+* Start times included; end times excluded.
+
+* LESSONS
+* 08:00-08:50, 09:05-09:45, 09:55-10:35,
+* 10:45-11:25, 11:35-12:15, 12:55-13:35,
+* 13:45-14:25, 14:35-15:15, 15:25-16:05.
+.func LESSON(t) {
++ ((t>=0)     * (t<3000))  +
++ ((t>=3900)  * (t<6300))  +
++ ((t>=6900)  * (t<9300))  +
++ ((t>=9900)  * (t<12300)) +
++ ((t>=12900) * (t<15300)) +
++ ((t>=17700) * (t<20100)) +
++ ((t>=20700) * (t<23100)) +
++ ((t>=23700) * (t<26100)) +
++ ((t>=26700) * (t<29100))
++ }
+
+* MISSED DETECTIONS
+* 08:55:00-08:55:20 (20 s); 09:20-09:22 (120 s);
+* 12:25-12:29 (240 s); 14:00-14:07 (420 s).
+.func GAP(t) {
++ ((t>=3300)  * (t<3320))  +
++ ((t>=4800)  * (t<4920))  +
++ ((t>=15900) * (t<16140)) +
++ ((t>=21600) * (t<22020))
++ }
+
+* MANUAL LIGHTING - ON 08:00-09:00 and 13:45-17:30.
+.func MANUAL(t) {
++ ((t>=0)     * (t<3600)) +
++ ((t>=20700) * (t<34200))
++ }
+
+* SMARTBOARD REQUEST
+* Lessons plus 16:15-17:00 in extended-use rooms.
+* Input t is simulation time; conversion is applied below.
+.func BOARD(t) {
++ 5 * (
++     LESSON(t*TIME_SCALE)
++     + AFTERNOON_USED
++       * (t*TIME_SCALE>=29700)
++       * (t*TIME_SCALE<32400)
++ )
++ }
+
+* SWITCH MODEL
+.model OCCSW SW(Ron=0.001 Roff=1e9 Vt=2.5 Vh=0.1)
+
+* DAYLIGHT SENSOR
+* Stress test: always dark.
+* Normal day: dark before 09:00 and after 15:00.
+* Resistance: 100k dark, 10k bright.
+.func RDAY(t) {
++ if(DARK_TEST>0.5,
++     100k,
++     if(t*TIME_SCALE<3600,
++         100k,
++         if(t*TIME_SCALE<25200, 10k, 100k)
++     )
++ )
++ }
+
+* ACTUAL OCCUPANCY - occupied until departure.
+.func OCC(t) {
++ if(t*TIME_SCALE<LEAVE_S, 5, 0)
++ }
+
+* SENSOR REPORT - GAP_TEST introduces missed detections.
+.func PRES(t,occupied_v) {
++ occupied_v * (1 - GAP_TEST*GAP(t*TIME_SCALE))
++ }
+
+* LIGHTING COMMAND
+* Manual: follow schedule. Automatic: occupied permission AND dark.
+.func LAMP(t,enabled_v,daylight_v) {
++ if(CONTROL_MODE<0.5,
++     5*MANUAL(t*TIME_SCALE),
++     if(enabled_v>2.5,
++         if(daylight_v<2.5, 5, 0),
++         0
++     )
++ )
++ }
+
+* SMARTBOARD COMMAND - occupied permission AND board requested.
+.func BOARD_CTRL(enabled_v,requested_v) {
++ if(enabled_v>2.5,
++     if(requested_v>2.5, 5, 0),
++     0
++ )
++ }
+* Main comparison: manual/automatic lighting x regular/extended use.
+
+* PARAMETERS - real seconds unless noted
+* TIME_SCALE=60: one simulated second represents one real minute.
+* T_END=34200: 08:00-17:30. T_OFF: absence delay.
+* GAP_TEST: missed detections. DARK_TEST: force insufficient daylight.
+.param TIME_SCALE=60
+.param T_END=34200
+.param T_OFF=180
+.param GAP_TEST=0
+.param DARK_TEST=0
+
+* EXPERIMENT SWEEP
+* AFTERNOON_USED: 0 regular, 1 extended. CONTROL_MODE: 0 manual, 1 automatic.
+.step param AFTERNOON_USED list 0 1
+.step param CONTROL_MODE list 0 1
+
+* DEPARTURE - 16:05 regular; 17:00 extended
+.param LEAVE_S={29100+3300*AFTERNOON_USED}
+
+* TRANSIENT ANALYSIS - 570 simulation seconds; maximum step 200 us
+.tran 0 {T_END/TIME_SCALE} 0 200u
+* FOUR RESEARCH OUTPUTS
+* Energy in Wh; interruption duration in real seconds.
+
+* 1. TOTAL ENERGY - supply power x time scale / 3600.
+.meas tran E_load_Wh INTEG (
++ -V(power)*I(V1)*TIME_SCALE/3600
++ ) FROM 0 TO {T_END/TIME_SCALE}
+
+* 2. ENERGY WHILE THE CLASSROOM IS EMPTY
+.meas tran E_empty_Wh INTEG (
++ -V(power)*I(V1)*TIME_SCALE/3600
++ * (V(occupied)<2.5)
++ ) FROM 0 TO {T_END/TIME_SCALE}
+
+* 3. LIGHTING INTERRUPTION - occupied, dark, lights commanded OFF.
+.meas tran T_light_off_s INTEG (
++ TIME_SCALE
++ * (V(occupied)>2.5)
++ * (V(light_sense)<2.5)
++ * (V(lamp_enable)<2.5)
++ ) FROM 0 TO {T_END/TIME_SCALE}
+
+* 4. SMARTBOARD INTERRUPTION - occupied, requested, commanded OFF.
+.meas tran T_board_off_s INTEG (
++ TIME_SCALE
++ * (V(occupied)>2.5)
++ * (V(board_request)>2.5)
++ * (V(board_enable)<2.5)
++ ) FROM 0 TO {T_END/TIME_SCALE}
+
+* RUN LABELS - control: 0 manual, 1 automatic;
+* afternoon: 0 regular, 1 extended; delay: real seconds.
+.meas tran control_setting PARAM CONTROL_MODE
+.meas tran afternoon_setting PARAM AFTERNOON_USED
+.meas tran delay_setting_s PARAM T_OFF
+
+* Preserve samples and required traces.
+.options plotwinsize=0
+.save V(power) I(V1)
++ V(occupied) V(presence) V(light_sense)
++ V(lamp_enable) V(board_request) V(board_enable)
++ V(absence_timer) V(occupancy_enable)

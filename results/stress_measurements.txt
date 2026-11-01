@@ -1,0 +1,101 @@
+﻿Sensor-Gap Test — LTspice Measurement Results
+
+I ran these simulations in LTspice using the schematics in the schematics folder. 
+The values below were copied from my SPICE Output Log. 
+LTspice version 26.1.1
+This test uses continuous darkness and temporary detection gaps while the classroom remains occupied
+
+Window: 0-570 simulation seconds; TIME_SCALE=60; 08:00-17:30 modelled day.
+Energy: Wh. Interruption duration and T_OFF: real seconds.
+AFTERNOON_USED: 0=regular use, 1=extended use.
+CONTROL_MODE: 0=manual lighting, 1=automatic lighting.
+
+STEP 1
+CONTROL_MODE = 1
+AFTERNOON_USED = 0
+T_OFF = 0
+E_load_Wh = 3675.57948356
+E_empty_Wh = 0.000149933897062
+T_light_off_s = 799.999999994
+T_board_off_s = 540.000000018
+
+STEP 2
+CONTROL_MODE = 1
+AFTERNOON_USED = 1
+T_OFF = 0
+E_load_Wh = 4115.5488017
+E_empty_Wh = 5.29178460826e-05
+T_light_off_s = 799.999999994
+T_board_off_s = 540.000000018
+
+STEP 3
+CONTROL_MODE = 1
+AFTERNOON_USED = 0
+T_OFF = 60
+E_load_Wh = 3704.18795225
+E_empty_Wh = 4.79709150469
+T_light_off_s = 600.000055804
+T_board_off_s = 420.000030411
+
+STEP 4
+CONTROL_MODE = 1
+AFTERNOON_USED = 1
+T_OFF = 60
+E_load_Wh = 4144.15727161
+E_empty_Wh = 4.79699450802
+T_light_off_s = 600.000055804
+T_board_off_s = 420.000030411
+
+STEP 5
+CONTROL_MODE = 1
+AFTERNOON_USED = 0
+T_OFF = 180
+E_load_Wh = 3749.50904582
+E_empty_Wh = 14.3909745912
+T_light_off_s = 300.000030407
+T_board_off_s = 240.00005018
+
+STEP 6
+CONTROL_MODE = 1
+AFTERNOON_USED = 1
+T_OFF = 180
+E_load_Wh = 4189.47836394
+E_empty_Wh = 14.3908776127
+T_light_off_s = 300.000030407
+T_board_off_s = 240.00005018
+
+STEP 7
+CONTROL_MODE = 1
+AFTERNOON_USED = 0
+T_OFF = 300
+E_load_Wh = 3781.32208818
+E_empty_Wh = 23.9848576747
+T_light_off_s = 120.00005014
+T_board_off_s = 120.00005014
+
+STEP 8
+CONTROL_MODE = 1
+AFTERNOON_USED = 1
+T_OFF = 300
+E_load_Wh = 4221.29140637
+E_empty_Wh = 23.9847607281
+T_light_off_s = 120.00005014
+T_board_off_s = 120.00005014
+
+STEP 9
+CONTROL_MODE = 1
+AFTERNOON_USED = 0
+T_OFF = 600
+E_load_Wh = 3822.72901521
+E_empty_Wh = 47.9695653977
+T_light_off_s = 0
+T_board_off_s = 0
+
+STEP 10
+CONTROL_MODE = 1
+AFTERNOON_USED = 1
+T_OFF = 600
+E_load_Wh = 4262.69833364
+E_empty_Wh = 47.96946863
+T_light_off_s = 0
+T_board_off_s = 0
